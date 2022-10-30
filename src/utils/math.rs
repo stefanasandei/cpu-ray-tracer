@@ -1,5 +1,4 @@
 use nalgebra::Vector3;
-use rand::Rng;
 
 pub fn len_squared(v: &Vector3<f64>) -> f64 {
     return v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
@@ -12,22 +11,19 @@ pub fn reflect(v: &Vector3<f64>, n: &Vector3<f64>) -> Vector3<f64> {
 
 #[allow(dead_code)]
 pub fn rand_float() -> f64 {
-    let mut rng = rand::thread_rng();
-    return rng.gen_range(-1.0..1.0);
+    return fastrand::f64();
 }
 
 #[allow(dead_code)]
 pub fn rand_range(min: f64, max: f64) -> f64 {
-    let mut rng = rand::thread_rng();
-    return rng.gen_range(min..max);
+    return min + (max - min) * fastrand::f64();
 }
 
 pub fn rand_vec(min: f64, max: f64) -> Vector3<f64> {
-    let mut rng = rand::thread_rng();
     Vector3::new(
-        rng.gen_range(min..max),
-        rng.gen_range(min..max),
-        rng.gen_range(min..max),
+        rand_range(min, max),
+        rand_range(min, max),
+        rand_range(min, max),
     )
 }
 
