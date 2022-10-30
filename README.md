@@ -2,7 +2,7 @@
 
 A hobby CPU-based ray tracer built from scratch in Rust
 
-![example](https://media.discordapp.net/attachments/833285965019217980/1036234290809278504/simple.png?width=1214&height=683)
+![example](https://media.discordapp.net/attachments/833285965019217980/1036257567334211584/simple.png?width=1214&height=683)
 
 ## Resources
 
