@@ -41,7 +41,7 @@ impl Renderer {
                 let mut g = 0.0;
                 let mut b = 0.0;
                 let samples = 30.0;
-                let gamma = 2.0;
+                let gamma = 1.0;
 
                 for _ in 0..(samples as u32) {
                     let pixel = self.per_pixel(i, j, scene, camera);

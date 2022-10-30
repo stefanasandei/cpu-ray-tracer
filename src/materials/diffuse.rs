@@ -1,6 +1,10 @@
 use nalgebra::Vector3;
 
-use crate::{shapes::ray::Ray, utils::math::unit_rand_vec};
+#[allow(unused_imports)]
+use crate::{
+    shapes::ray::Ray,
+    utils::math::{rand_in_hemisphere, unit_rand_vec},
+};
 
 use super::material::{Material, MaterialPayload};
 
@@ -16,7 +20,8 @@ impl Material for DiffuseMaterial {
         intersection_point: &Vector3<f64>,
         normal: &Vector3<f64>,
     ) -> Option<MaterialPayload> {
-        let scatter_dir = normal + unit_rand_vec();
+        // let scatter_dir = normal + unit_rand_vec();
+        let scatter_dir = rand_in_hemisphere(normal);
 
         Some(MaterialPayload {
             scattered: Ray {

@@ -29,6 +29,20 @@ pub fn create(name: &'static str, version: &'static str) -> Application {
     let scene = Scene {
         name: "simple",
         spheres: vec![
+            // Sphere {
+            //     position: Vector3::new(0.0, 0.0, 0.0),
+            //     radius: 0.5,
+            //     mat: Some(Arc::new(DiffuseMaterial {
+            //         albedo: Vector3::new(0.5, 0.5, 0.5),
+            //     })),
+            // },
+            // Sphere {
+            //     position: Vector3::new(0.0, 100.5, 0.0),
+            //     radius: 100.0,
+            //     mat: Some(Arc::new(DiffuseMaterial {
+            //         albedo: Vector3::new(0.5, 0.5, 0.5),
+            //     })),
+            // },
             Sphere {
                 position: Vector3::new(0.0, 0.2, 0.0),
                 radius: 0.3,
