@@ -2,7 +2,10 @@ use std::sync::Arc;
 
 use nalgebra::Vector3;
 
-use crate::{materials::diffuse::DiffuseMaterial, shapes::sphere::Sphere};
+use crate::{
+    materials::{diffuse::DiffuseMaterial, metal::MetalMaterial},
+    shapes::sphere::Sphere,
+};
 
 use super::{
     camera::{self, Camera},
@@ -36,8 +39,9 @@ pub fn create(name: &'static str, version: &'static str) -> Application {
             Sphere {
                 position: Vector3::new(-0.8, 0.0, 0.0),
                 radius: 0.5,
-                mat: Some(Arc::new(DiffuseMaterial {
+                mat: Some(Arc::new(MetalMaterial {
                     albedo: Vector3::new(1.0, 0.0, 1.0),
+                    fuzz: 0.0,
                 })),
             },
             Sphere {
