@@ -14,11 +14,15 @@ use super::{
 
 pub struct Renderer {
     fb: Framebuffer,
+    samples: f64,
+    gamma: f64,
 }
 
-pub fn create() -> Renderer {
+pub fn create(width: i64, height: i64, samples: f64, gamma: f64) -> Renderer {
     return Renderer {
-        fb: framebuffer::create(1280, 720),
+        fb: framebuffer::create(width as u32, height as u32),
+        samples: samples,
+        gamma: gamma,
     };
 }
 
@@ -40,25 +44,20 @@ impl Renderer {
                 let mut r = 0.0;
                 let mut g = 0.0;
                 let mut b = 0.0;
-                let samples = 1000.0;
-                let gamma = 1.0;
 
-                for _ in 0..(samples as u32) {
+                for _ in 0..(self.samples as u32) {
                     let pixel = self.per_pixel(i, j, scene, camera);
                     r += pixel[0];
                     g += pixel[1];
                     b += pixel[2];
                 }
 
-                r = (r / samples).powf(1.0 / gamma);
-                g = (g / samples).powf(1.0 / gamma);
-                b = (b / samples).powf(1.0 / gamma);
+                r = (r / self.samples).powf(1.0 / self.gamma);
+                g = (g / self.samples).powf(1.0 / self.gamma);
+                b = (b / self.samples).powf(1.0 / self.gamma);
 
-                self.fb.data[(i, j)] = image::Rgb([
-                    (r.clamp(0.0, 0.999) * 255.0) as u8,
-                    (g.clamp(0.0, 0.999) * 255.0) as u8,
-                    (b.clamp(0.0, 0.999) * 255.0) as u8,
-                ]);
+                self.fb.data[(i, j)] =
+                    image::Rgb([(r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8]);
             }
 
             pb.inc(1);

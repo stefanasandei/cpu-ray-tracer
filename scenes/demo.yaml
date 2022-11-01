@@ -1,0 +1,33 @@
+output: demo.png
+size: [1280, 720]
+samples: 50.0
+gamma: 1.0
+world:
+  - sphere:
+    position: [0.0, 0.2, 0.0]
+    radius: 0.3
+    material:
+      type: diffuse
+      albedo: [1.0, 1.0, 1.0]
+
+  - sphere:
+    position: [-0.8, 0.0, 0.0]
+    radius: 0.5
+    material:
+      type: metal
+      albedo: [0.9, 1.0, 1.0]
+      fuzz: 0.0
+
+  - sphere:
+    position: [0.8, 0.0, 0.0]
+    radius: 0.5
+    material:
+      type: diffuse
+      albedo: [0.89, 0.55, 0.7]
+
+  - sphere:
+    position: [0.0, 100.5, 0.0]
+    radius: 100.0
+    material:
+      type: diffuse
+      albedo: [0.55, 0.7, 0.89]
