@@ -9,6 +9,7 @@ nalgebra = "0.31.1"
 fastrand = "1.8.0"
 indicatif = "0.17.1"
 yaml-rust = "0.4.5"
+rayon = "1.5.3"
 
 [profile.release]
 debug = true

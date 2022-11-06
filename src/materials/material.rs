@@ -14,4 +14,6 @@ pub trait Material {
         intersection_point: &Vector3<f64>,
         normal: &Vector3<f64>,
     ) -> Option<MaterialPayload>;
+
+    fn emitted(&self, p: Vector3<f64>) -> Vector3<f64>;
 }

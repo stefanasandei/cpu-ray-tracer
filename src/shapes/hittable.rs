@@ -8,7 +8,7 @@ pub struct HitRecord {
     pub intersection_point: Vector3<f64>,
     pub normal: Vector3<f64>,
     pub hit_distance: f64,
-    pub mat: Option<Arc<dyn Material + 'static>>,
+    pub mat: Option<Arc<dyn Material + Send + Sync>>,
 }
 
 pub trait Hittable {

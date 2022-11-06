@@ -13,7 +13,7 @@ use super::{
 pub struct Sphere {
     pub position: Vector3<f64>,
     pub radius: f64,
-    pub mat: Option<Arc<dyn Material + 'static>>,
+    pub mat: Option<Arc<dyn Material + Send + Sync>>,
 }
 
 impl Hittable for Sphere {

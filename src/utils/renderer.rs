@@ -39,32 +39,35 @@ impl Renderer {
 
         camera.set_size(self.fb.width, self.fb.height);
 
-        for j in 0..self.fb.height {
-            for i in 0..self.fb.width {
-                let mut r = 0.0;
-                let mut g = 0.0;
-                let mut b = 0.0;
+        let row_size: u32 = 20;
 
-                for _ in 0..(self.samples as u32) {
-                    let pixel = self.per_pixel(i, j, scene, camera);
-                    r += pixel[0];
-                    g += pixel[1];
-                    b += pixel[2];
+        for j in (0..self.fb.height).step_by(row_size.try_into().unwrap()) {
+            for k in 0..row_size {
+                for i in 0..self.fb.width {
+                    let mut r = 0.0;
+                    let mut g = 0.0;
+                    let mut b = 0.0;
+
+                    for _ in 0..(self.samples as u32) {
+                        let pixel = self.per_pixel(i, j + k, scene, camera);
+                        r += pixel[0];
+                        g += pixel[1];
+                        b += pixel[2];
+                    }
+
+                    r = (r / self.samples).powf(1.0 / self.gamma);
+                    g = (g / self.samples).powf(1.0 / self.gamma);
+                    b = (b / self.samples).powf(1.0 / self.gamma);
+
+                    self.fb.data[(i, j + k)] =
+                        image::Rgb([(r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8]);
                 }
-
-                r = (r / self.samples).powf(1.0 / self.gamma);
-                g = (g / self.samples).powf(1.0 / self.gamma);
-                b = (b / self.samples).powf(1.0 / self.gamma);
-
-                self.fb.data[(i, j)] =
-                    image::Rgb([(r * 255.0) as u8, (g * 255.0) as u8, (b * 255.0) as u8]);
+                pb.inc(1);
+                pb.set_message(format!(
+                    "{}%",
+                    (j as f64 / self.fb.height as f64 * 100.0) as u32
+                ));
             }
-
-            pb.inc(1);
-            pb.set_message(format!(
-                "{}%",
-                (j as f64 / self.fb.height as f64 * 100.0) as u32
-            ));
         }
 
         pb.finish_with_message("100%");
@@ -114,26 +117,31 @@ impl Renderer {
         }
 
         if self.trace_ray(&ray, &mut rec, active_scene) {
-            let mat_payload = rec
-                .mat
-                .unwrap()
-                .scatter(ray, &rec.intersection_point, &rec.normal);
+            let mat = rec.mat.unwrap();
+            let scatter = mat.scatter(ray, &rec.intersection_point, &rec.normal);
+            let emitted = mat.emitted(rec.intersection_point);
 
-            if mat_payload.is_some() {
-                let mut payload = mat_payload.unwrap();
-                let r = self.ray_color(&mut payload.scattered, active_scene, depth - 1);
-                let attenuation = payload.attenuation.as_ref();
-                return Vector3::new(
-                    r.x * attenuation[0],
-                    r.y * attenuation[1],
-                    r.z * attenuation[2],
-                );
+            if scatter.is_some() {
+                let mut scatter = scatter.unwrap();
+
+                let emitted = mat.emitted(rec.intersection_point);
+
+                let r = self.ray_color(&mut scatter.scattered, active_scene, depth - 1);
+
+                let attenuation = scatter.attenuation.as_ref();
+                return emitted
+                    + Vector3::new(
+                        r.x * attenuation[0],
+                        r.y * attenuation[1],
+                        r.z * attenuation[2],
+                    );
             }
 
-            return Vector3::new(0.0, 0.0, 0.0);
+            return emitted;
         }
 
-        let t = 0.5 * (ray.direction.y + 1.0);
-        return (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0);
+        return Vector3::new(0.0, 0.0, 0.0);
+        // let t = 0.5 * (ray.direction.y + 1.0);
+        // return (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0);
     }
 }

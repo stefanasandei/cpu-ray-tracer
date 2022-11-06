@@ -31,4 +31,8 @@ impl Material for DiffuseMaterial {
             attenuation: self.albedo,
         })
     }
+
+    fn emitted(&self, _p: Vector3<f64>) -> Vector3<f64> {
+        Vector3::new(0.0, 0.0, 0.0)
+    }
 }

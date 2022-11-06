@@ -4,7 +4,9 @@ use nalgebra::Vector3;
 use yaml_rust::YamlLoader;
 
 use crate::{
-    materials::{diffuse::DiffuseMaterial, material::Material, metal::MetalMaterial},
+    materials::{
+        diffuse::DiffuseMaterial, light::LightMaterial, material::Material, metal::MetalMaterial,
+    },
     shapes::sphere::Sphere,
 };
 
@@ -41,7 +43,7 @@ impl Scene {
                 );
                 let radius = doc["world"][i]["radius"].as_f64().unwrap();
 
-                let mut material: Option<Arc<(dyn Material + 'static)>> = None;
+                let mut material: Option<Arc<(dyn Material + Send + Sync)>> = None;
 
                 if doc["world"][i]["material"]["type"]
                     == yaml_rust::Yaml::String("diffuse".to_string())
@@ -63,6 +65,16 @@ impl Scene {
                             doc["world"][i]["material"]["albedo"][2].as_f64().unwrap(),
                         ),
                         fuzz: doc["world"][i]["material"]["fuzz"].as_f64().unwrap(),
+                    }));
+                } else if doc["world"][i]["material"]["type"]
+                    == yaml_rust::Yaml::String("light".to_string())
+                {
+                    material = Some(Arc::new(LightMaterial {
+                        emit: Vector3::new(
+                            doc["world"][i]["material"]["emit"][0].as_f64().unwrap(),
+                            doc["world"][i]["material"]["emit"][1].as_f64().unwrap(),
+                            doc["world"][i]["material"]["emit"][2].as_f64().unwrap(),
+                        ),
                     }));
                 }
 
